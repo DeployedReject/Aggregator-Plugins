@@ -1,0 +1,9 @@
+{
+  "channel" : "NIGHTLY",
+  "id" : "aniwatch",
+  "baseUrl" : "https://aniwatchtv.to",
+  "description" : "Fast anime streaming provider",
+  "name" : "AniWatch Provider",
+  "version" : "1.0.0",
+  "author" : "CommunityDev"
+}
