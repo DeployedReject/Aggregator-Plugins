@@ -1,0 +1,9 @@
+{
+  "description" : "4Anime streaming provider",
+  "name" : "4Anime Test",
+  "version" : "1.0.0",
+  "author" : "Community",
+  "channel" : "NIGHTLY",
+  "id" : "fouranime_test",
+  "baseUrl" : "https://4anime.com.ro"
+}
