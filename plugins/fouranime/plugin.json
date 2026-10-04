@@ -1,8 +1,8 @@
 {
-  "description" : "4Anime source plugin",
+  "description" : "4Anime streaming provider",
   "name" : "4Anime",
   "version" : "1.1.0",
-  "author" : "DeployedReject",
+  "author" : "Community",
   "channel" : "NIGHTLY",
   "id" : "fouranime",
   "baseUrl" : "https://4anime.com.ro"
