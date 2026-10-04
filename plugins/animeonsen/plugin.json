@@ -1,9 +1,9 @@
 {
-  "description" : "AnimeOnsen streaming provider for anime shows and movies",
-  "name" : "AnimeOnsen",
-  "version" : "1.0.0",
-  "author" : "Community",
-  "channel" : "NIGHTLY",
+  "author" : "AI:Gemini",
+  "channel" : "STABLE",
   "id" : "animeonsen",
-  "baseUrl" : "https://www.animeonsen.xyz"
+  "baseUrl" : "https://www.animeonsen.xyz",
+  "description" : "AnimeOnsen source provider with DASH stream extraction",
+  "name" : "AnimeOnsen",
+  "version" : "1.1.0"
 }

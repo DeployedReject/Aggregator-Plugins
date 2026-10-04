@@ -2,7 +2,7 @@ export default {
   id: "animeonsen",
   name: "AnimeOnsen",
   baseUrl: "https://www.animeonsen.xyz",
-  version: "1.0.0",
+  version: "1.1.0",
 
   async getHome() {
     return this.search("");
@@ -74,12 +74,6 @@ export default {
             "Referer": "https://www.animeonsen.xyz/",
             "Origin": "https://www.animeonsen.xyz",
           },
-          subtitles: [
-            {
-              file: `https://api.animeonsen.xyz/v4/subtitles/${contentId}/en-US/${epNum}`,
-              label: "English",
-            },
-          ],
         },
       ];
     } catch (e) {
