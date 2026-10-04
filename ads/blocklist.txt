@@ -1,0 +1,4 @@
+! Aggregator Adblock Rules
+||doubleclick.net^
+||googlesyndication.com^
+||popads.net^
