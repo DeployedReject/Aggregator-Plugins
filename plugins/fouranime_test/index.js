@@ -1,1 +1,0 @@
-export default { id: "fouranime_test", name: "4Anime Test" };
