@@ -1,0 +1,29 @@
+name: Notify Server on Plugins Push
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  notify-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Server Webhook for Plugins Sync
+        run: |
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X POST \
+            "https://aggregator-registry.mishravaibhav2048.workers.dev/api/v1/webhook/plugins-sync" \
+            -H "X-Webhook-Secret: ${{ secrets.SERVER_WEBHOOK_SECRET || 'dev-secret-key' }}")
+          
+          BODY=$(echo "$RESPONSE" | sed -e '$d')
+          STATUS=$(echo "$RESPONSE" | tail -n1 | cut -d':' -f2)
+
+          echo "Response Body: $BODY"
+          echo "HTTP Status: $STATUS"
+
+          if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 300 ]; then
+            echo "Success: Server acknowledged push and started background Git sync."
+            exit 0
+          else
+            echo "Error: Server returned HTTP status $STATUS"
+            exit 1
+          fi
