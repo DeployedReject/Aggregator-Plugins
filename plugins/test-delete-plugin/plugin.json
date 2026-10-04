@@ -1,9 +1,0 @@
-{
-  "description" : "Temporary plugin to test deletion and git sync",
-  "name" : "Test Delete Plugin",
-  "version" : "1.0.0",
-  "author" : "AntigravityTester",
-  "channel" : "NIGHTLY",
-  "id" : "test-delete-plugin",
-  "baseUrl" : "https://test.local"
-}
