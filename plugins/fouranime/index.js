@@ -15,7 +15,7 @@ export default {
   id: "fouranime",
   name: "4Anime",
   baseUrl: "https://4anime.com.ro",
-  version: "1.1.0",
+  version: "1.2.0",
 
   async search(query) {
     const form = new URLSearchParams();
@@ -247,7 +247,7 @@ export default {
                       .map((t) => ({ file: t.file, label: t.label || "Sub" }))
                   : undefined;
                 streams.push({
-                  quality: `[${sType.toUpperCase()}] ${s.name} 1080p (HLS)`,
+                  quality: "1080p",
                   url: sData.source,
                   subtitles: subTracks,
                   type: sType,
@@ -271,22 +271,13 @@ export default {
               if (m3u8Match && !seenUrls.has(m3u8Match[0])) {
                 seenUrls.add(m3u8Match[0]);
                 streams.push({
-                  quality: `[${sType.toUpperCase()}] ${s.name} (HLS)`,
+                  quality: "720p",
                   url: m3u8Match[0],
                   type: sType,
                 });
                 directStreamFound = true;
               }
             } catch (err) {}
-          }
-
-          if (!directStreamFound && !targetEmbedUrl.includes("4anime.com.ro") && !seenUrls.has(targetEmbedUrl)) {
-            seenUrls.add(targetEmbedUrl);
-            streams.push({
-              quality: `[${sType.toUpperCase()}] ${s.name} (Embed)`,
-              url: targetEmbedUrl,
-              type: sType,
-            });
           }
 
           continue;
@@ -300,7 +291,7 @@ export default {
               if (item.file && !item.file.includes("googlevideo.com") && !seenUrls.has(item.file)) {
                 seenUrls.add(item.file);
                 streams.push({
-                  quality: `[${(s.type || "sub").toUpperCase()}] ${s.name} ${item.label || item.type || ""}`.trim(),
+                  quality: "720p",
                   url: item.file,
                   type: s.type || "sub",
                 });
@@ -308,25 +299,7 @@ export default {
             }
           } catch (e) {}
         }
-
-        if (!seenUrls.has(playerUrl)) {
-          seenUrls.add(playerUrl);
-          streams.push({
-            quality: `[${(s.type || "sub").toUpperCase()}] ${s.name} [Player Embed]`,
-            url: playerUrl,
-            type: s.type || "sub",
-          });
-        }
-      } catch (e) {
-        if (!seenUrls.has(playerUrl)) {
-          seenUrls.add(playerUrl);
-          streams.push({
-            quality: `[${(s.type || "sub").toUpperCase()}] ${s.name} [Player Embed]`,
-            url: playerUrl,
-            type: s.type || "sub",
-          });
-        }
-      }
+      } catch (e) {}
     }
 
     return streams;
