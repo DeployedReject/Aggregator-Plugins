@@ -1,9 +1,9 @@
 {
   "description" : "4Anime streaming provider",
   "name" : "4Anime",
-  "version" : "1.0.0",
+  "version" : "1.1.2",
   "author" : "Community",
-  "channel" : "NIGHTLY",
+  "channel" : "STABLE",
   "id" : "fouranime",
   "baseUrl" : "https://4anime.com.ro"
 }

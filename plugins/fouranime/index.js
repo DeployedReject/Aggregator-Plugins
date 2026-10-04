@@ -216,28 +216,25 @@ export default {
         const pHtml = await pRes.text();
 
         const embedIframe = pHtml.match(/<iframe[^>]+src="([^">]+)"/);
+        let targetEmbedUrl = "";
         if (embedIframe) {
-          let embedUrl = embedIframe[1].replace(/&#038;/g, "&").replace(/&amp;/g, "&");
-          if (embedUrl.startsWith("//")) embedUrl = `https:${embedUrl}`;
+          targetEmbedUrl = embedIframe[1].replace(/&#038;/g, "&").replace(/&amp;/g, "&");
+          if (targetEmbedUrl.startsWith("//")) targetEmbedUrl = `https:${targetEmbedUrl}`;
+        } else if (playerUrl.includes("megavid.buzz") || playerUrl.includes("megaplay.su")) {
+          targetEmbedUrl = playerUrl;
+        }
 
-          const sType = s.type || (embedUrl.includes("/dub") ? "dub" : "sub");
+        if (targetEmbedUrl) {
+          const sType = s.type || (targetEmbedUrl.includes("/dub") ? "dub" : "sub");
+          let directStreamFound = false;
 
-          if (!seenUrls.has(embedUrl)) {
-            seenUrls.add(embedUrl);
-            streams.push({
-              quality: `[${sType.toUpperCase()}] ${s.name} (Embed)`,
-              url: embedUrl,
-              type: sType,
-            });
-          }
-
-          if (embedUrl.includes("megavid.buzz")) {
+          if (targetEmbedUrl.includes("megavid.buzz")) {
             try {
-              const srcApi = `${embedUrl.replace(/\/$/, "")}/source`;
+              const srcApi = `${targetEmbedUrl.replace(/\/$/, "")}/source`;
               const sRes = await fetch(srcApi, {
                 headers: {
                   "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0",
-                  Referer: embedUrl,
+                  Referer: targetEmbedUrl,
                   Accept: "application/json",
                 },
               });
@@ -255,13 +252,14 @@ export default {
                   subtitles: subTracks,
                   type: sType,
                 });
+                directStreamFound = true;
               }
             } catch (err) {}
           }
 
-          if (embedUrl.includes("megaplay.su")) {
+          if (targetEmbedUrl.includes("megaplay.su")) {
             try {
-              const eRes = await fetch(embedUrl, {
+              const eRes = await fetch(targetEmbedUrl, {
                 headers: {
                   "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0",
                   Referer: this.baseUrl,
@@ -277,8 +275,18 @@ export default {
                   url: m3u8Match[0],
                   type: sType,
                 });
+                directStreamFound = true;
               }
             } catch (err) {}
+          }
+
+          if (!directStreamFound && !targetEmbedUrl.includes("4anime.com.ro") && !seenUrls.has(targetEmbedUrl)) {
+            seenUrls.add(targetEmbedUrl);
+            streams.push({
+              quality: `[${sType.toUpperCase()}] ${s.name} (Embed)`,
+              url: targetEmbedUrl,
+              type: sType,
+            });
           }
 
           continue;
