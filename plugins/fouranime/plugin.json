@@ -1,7 +1,7 @@
 {
   "description" : "4Anime streaming provider",
   "name" : "4Anime",
-  "version" : "1.1.0",
+  "version" : "1.1.1",
   "author" : "Community",
   "channel" : "NIGHTLY",
   "id" : "fouranime",
