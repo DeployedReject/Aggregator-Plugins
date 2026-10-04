@@ -1,0 +1,9 @@
+{
+  "description" : "AnimeOnsen streaming provider for anime shows and movies",
+  "name" : "AnimeOnsen",
+  "version" : "1.0.0",
+  "author" : "Community",
+  "channel" : "NIGHTLY",
+  "id" : "animeonsen",
+  "baseUrl" : "https://www.animeonsen.xyz"
+}
