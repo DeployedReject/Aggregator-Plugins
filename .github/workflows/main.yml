@@ -12,7 +12,7 @@ jobs:
         run: |
           RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X POST \
             "https://aggregator-registry.mishravaibhav2048.workers.dev/api/v1/webhook/plugins-sync" \
-            -H "X-Webhook-Secret: ${{ secrets.SERVER_WEBHOOK_SECRET || 'dev-secret-key' }}")
+            -H "X-Webhook-Secret: ${{ secrets.SERVER_WEBHOOK_SECRET }}")
           
           BODY=$(echo "$RESPONSE" | sed -e '$d')
           STATUS=$(echo "$RESPONSE" | tail -n1 | cut -d':' -f2)
