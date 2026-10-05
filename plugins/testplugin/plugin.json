@@ -1,9 +1,0 @@
-{
-  "channel" : "NIGHTLY",
-  "id" : "testplugin",
-  "baseUrl" : "https://test.anime.com",
-  "description" : "A test anime plugin",
-  "name" : "Test Plugin",
-  "version" : "1.0.0",
-  "author" : "AuthorTest"
-}
