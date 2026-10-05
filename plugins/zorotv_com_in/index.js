@@ -2,7 +2,7 @@ const plugin = {
   id: "zorotv_com_in",
   name: "Zorotv Com In",
   baseUrl: "https://zorotv.com.in",
-  version: "1.0.0",
+  version: "1.2.0",
 
   async getHome() {
     try {
@@ -106,98 +106,40 @@ const plugin = {
           });
         }
       });
-      
-      if (episodes.length === 0) {
-        // Fallback: check if the mediaUrl itself is an episode page or has links
-        const allLinks = doc.querySelectorAll("a");
-        allLinks.forEach(a => {
-          const href = a.getAttribute("href");
-          if (href && (href.includes("episode") || href.includes("-ep-"))) {
-            let url = href;
-            if (url.startsWith("/")) url = this.baseUrl + url;
-            if (!episodes.some(x => x.url === url)) {
-              episodes.push({
-                id: url.replace(this.baseUrl, "").replace(/^\//, "").replace(/\/$/, ""),
-                number: episodes.length + 1,
-                title: a.textContent.trim() || `Episode ${episodes.length + 1}`,
-                url: url
-              });
-            }
-          }
-        });
-      }
-      
       return episodes;
     } catch (e) {
       return [];
     }
   },
 
+  /**
+   * Universal Background Sniffing Mode:
+   * Returns watch target URL and media patterns so the client's headless/background
+   * tab loads the site, executes dynamic JS/Turnstile, and intercepts valid M3U8/MPD stream URLs.
+   */
   async getStreams(episodeId) {
-    try {
-      let epUrl = episodeId;
-      if (!epUrl.startsWith("http")) {
-        epUrl = `${this.baseUrl}/${episodeId}/`;
-      }
-      const response = await fetch(epUrl);
-      const html = await response.text();
-      const doc = new DOMParser().parseFromString(html, "text/html");
-      
-      const streams = [];
-      const iframes = doc.querySelectorAll("iframe");
-      for (const iframe of iframes) {
-        let src = iframe.getAttribute("src") || iframe.getAttribute("data-src");
-        if (src) {
-          if (src.startsWith("//")) src = "https:" + src;
-          
-          // Resolve embedded streams or fetch player page
-          try {
-            const embedRes = await fetch(src, {
-              headers: { "Referer": this.baseUrl }
-            });
-            const embedHtml = await embedRes.text();
-            
-            // Regex to find .m3u8 or .mp4 links
-            const m3u8Match = embedHtml.match(/["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/);
-            if (m3u8Match) {
-              streams.push({
-                url: m3u8Match[1],
-                quality: "1080p",
-                type: "sub"
-              });
-            }
-            
-            const mp4Match = embedHtml.match(/["'](https?:\/\/[^"']+\.mp4[^"']*)["']/);
-            if (mp4Match) {
-              streams.push({
-                url: mp4Match[1],
-                quality: "720p",
-                type: "sub"
-              });
-            }
-          } catch (err) {}
-        }
-      }
-      
-      // If no streams found via iframe directly, check script tags or direct video tags
-      if (streams.length === 0) {
-        const sources = doc.querySelectorAll("source, video");
-        sources.forEach(s => {
-          const src = s.getAttribute("src");
-          if (src && (src.includes(".m3u8") || src.includes(".mp4"))) {
-            streams.push({
-              url: src.startsWith("/") ? this.baseUrl + src : src,
-              quality: "1080p",
-              type: "sub"
-            });
-          }
-        });
-      }
-
-      return streams;
-    } catch (e) {
-      return [];
+    let epUrl = episodeId;
+    if (!epUrl.startsWith("http")) {
+      epUrl = `${this.baseUrl}/${episodeId}/`;
     }
+
+    return [
+      {
+        mode: "background_sniff",
+        targetUrl: epUrl,
+        type: "sub",
+        mediaPatterns: [
+          "\\.m3u8(?:\\?.*)?$",
+          "\\.mpd(?:\\?.*)?$",
+          "\\.mp4(?:\\?.*)?$"
+        ],
+        headers: {
+          "Referer": this.baseUrl,
+          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
+        },
+        timeoutMs: 12000
+      }
+    ];
   }
 };
 

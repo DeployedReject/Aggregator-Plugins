@@ -2,7 +2,7 @@ export default {
   id: "animeonsen",
   name: "AnimeOnsen",
   baseUrl: "https://www.animeonsen.xyz",
-  version: "1.1.0",
+  version: "1.2.0",
 
   async getHome() {
     return this.search("");
@@ -60,24 +60,33 @@ export default {
     }
   },
 
+  /**
+   * Universal Background Sniffing Mode:
+   * Returns watch target URL and media patterns so the client's headless/background
+   * tab loads the site, executes dynamic JS/Turnstile, and intercepts valid M3U8/MPD stream URLs.
+   */
   async getStreams(episodeId) {
-    try {
-      const parts = episodeId.split(":");
-      const contentId = parts[0];
-      const epNum = parts[1] || "1";
-      return [
-        {
-          quality: "720p",
-          url: `https://cdn.animeonsen.xyz/video/mp4-dash/${contentId}/${epNum}/manifest.mpd`,
-          type: "sub",
-          headers: {
-            "Referer": "https://www.animeonsen.xyz/",
-            "Origin": "https://www.animeonsen.xyz",
-          },
+    const parts = episodeId.split(":");
+    const contentId = parts[0];
+    const epNum = parts[1] || "1";
+    const watchUrl = `${this.baseUrl}/watch/${contentId}?episode=${epNum}`;
+
+    return [
+      {
+        mode: "background_sniff",
+        targetUrl: watchUrl,
+        type: "sub",
+        mediaPatterns: [
+          "\\.mpd(?:\\?.*)?$",
+          "\\.m3u8(?:\\?.*)?$",
+          "cdn\\.animeonsen\\.xyz/video"
+        ],
+        headers: {
+          "Referer": "https://www.animeonsen.xyz/",
+          "Origin": "https://www.animeonsen.xyz"
         },
-      ];
-    } catch (e) {
-      return [];
-    }
+        timeoutMs: 12000
+      }
+    ];
   },
 };

@@ -2,7 +2,7 @@ const plugin = {
   id: "9anime_cfd",
   name: "9anime Cfd",
   baseUrl: "https://9anime.cfd",
-  version: "1.0.0",
+  version: "1.2.0",
 
   async getHome() {
     try {
@@ -42,7 +42,7 @@ const plugin = {
       let slug = mediaId;
       if (mediaId.startsWith("http")) {
         const urlObj = new URL(mediaId);
-        slug = urlObj.searchParams.get("slug");
+        slug = urlObj.searchParams.get("slug") || mediaId.split("/").pop();
       }
       const response = await fetch(`https://media.9anime.cfd/data/watch/${slug}/1.json`);
       const data = await response.json();
@@ -60,50 +60,31 @@ const plugin = {
   },
 
   async getStreams(episodeId) {
-    let slug = "";
-    let epNum = "1";
-    if (episodeId.startsWith("http")) {
-      try {
-        const u = new URL(episodeId);
-        slug = u.searchParams.get("slug") || "";
-        epNum = u.searchParams.get("ep") || "1";
-      } catch (e) {}
-    } else {
+    let watchUrl = episodeId;
+    if (!episodeId.startsWith("http")) {
       const parts = episodeId.split("/");
-      slug = parts[0];
-      epNum = parts[1] || "1";
+      const slug = parts[0];
+      const epNum = parts[1] || "1";
+      watchUrl = `${this.baseUrl}/watch.html?slug=${slug}&ep=${epNum}`;
     }
 
-    if (slug) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000);
-        const res = await fetch(`https://media.9anime.cfd/data/watch/${slug}/${epNum}.json`, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const data = await res.json();
-          const servers = data.servers || [];
-          for (const server of servers) {
-            const embedUrl = server.embed_url;
-            if (embedUrl && embedUrl.includes("streaming.php")) {
-              try {
-                const streamController = new AbortController();
-                const streamTimeoutId = setTimeout(() => streamController.abort(), 3000);
-                const streamRes = await fetch(embedUrl, { signal: streamController.signal });
-                clearTimeout(streamTimeoutId);
-                const html = await streamRes.text();
-                const m3u8Match = html.match(/sources\s*:\s*\[\s*\{\s*file\s*:\s*"([^"]+\.m3u8[^"]*)"/i) || html.match(/"file"\s*:\s*"([^"]+\.m3u8[^"]*)"/i) || html.match(/'file'\s*:\s*'([^']+\.m3u8[^']*)'/i);
-                if (m3u8Match && m3u8Match[1]) {
-                  return [{ quality: "Auto", url: m3u8Match[1], type: "sub" }];
-                }
-              } catch (e) {}
-            }
-          }
-        }
-      } catch (e) {}
-    }
-
-    return [{ quality: "Auto", url: "https://dummy-stream.m3u8", type: "sub" }];
+    return [
+      {
+        mode: "background_sniff",
+        targetUrl: watchUrl,
+        type: "sub",
+        mediaPatterns: [
+          "\\.m3u8(?:\\?.*)?$",
+          "\\.mpd(?:\\?.*)?$",
+          "\\.mp4(?:\\?.*)?$"
+        ],
+        headers: {
+          "Referer": this.baseUrl,
+          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0"
+        },
+        timeoutMs: 12000
+      }
+    ];
   }
 };
 
