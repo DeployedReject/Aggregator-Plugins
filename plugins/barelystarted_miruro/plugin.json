@@ -1,0 +1,9 @@
+{
+  "baseUrl" : "https://barelystarted.miruro.tv",
+  "id" : "barelystarted_miruro",
+  "channel" : "NIGHTLY",
+  "author" : "AI:Gemini",
+  "version" : "1.0.0",
+  "name" : "Barelystarted Miruro",
+  "description" : "AI-synthesized plugin for barelystarted.miruro.tv"
+}
