@@ -1,0 +1,9 @@
+{
+  "baseUrl" : "https://test.anime.com",
+  "id" : "testplugin",
+  "channel" : "NIGHTLY",
+  "author" : "AuthorTest",
+  "version" : "1.0.0",
+  "name" : "Test Plugin",
+  "description" : "A test anime plugin"
+}
