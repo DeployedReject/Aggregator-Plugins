@@ -1,9 +1,0 @@
-{
-  "description" : "AI-synthesized plugin for zorotv.com.in",
-  "name" : "Zorotv Com In",
-  "version" : "1.2.0",
-  "author" : "AI:Gemini",
-  "channel" : "NIGHTLY",
-  "id" : "zorotv_com_in",
-  "baseUrl" : "https://zorotv.com.in"
-}
