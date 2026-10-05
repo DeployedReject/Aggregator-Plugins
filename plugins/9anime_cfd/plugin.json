@@ -1,0 +1,9 @@
+{
+  "description" : "AI-synthesized plugin for 9anime.cfd",
+  "name" : "9anime Cfd",
+  "version" : "1.0.0",
+  "author" : "AI:Gemini",
+  "channel" : "NIGHTLY",
+  "id" : "9anime_cfd",
+  "baseUrl" : "https://9anime.cfd"
+}
