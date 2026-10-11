@@ -3,7 +3,7 @@
   "name": "Internet Archive",
   "description": "Public domain movies, historical archives, and cultural media from archive.org",
   "baseUrl": "https://archive.org",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Community",
   "channel": "STABLE"
 }
